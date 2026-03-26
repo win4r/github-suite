@@ -1,231 +1,248 @@
 ---
 name: github-analyzer
-# version: 1.0
+# version: 2.0
 description: |
-  GitHub开源项目源码深度分析器。对项目进行多维度调研分析，
-  包含架构理解、模块解析、设计模式识别、代码质量评估。
-  Use when 分析GitHub项目, 源码调研, 代码架构分析, 开源项目学习.
-  触发词: 源码分析, GitHub调研, 项目分析, 代码架构, 深度调研
-allowed-tools: Read, Grep, Glob, WebFetch, WebSearch, AskUserQuestion
+  Deep source code analysis for GitHub open-source projects. Multi-dimension analysis
+  covering architecture, modules, design patterns, code quality, and innovation.
+  Three modes: deep-research, quick-overview, comparative.
+  Use when: analyzing GitHub projects, source code research, architecture review, learning from open source.
+  Trigger: source analysis, GitHub research, project analysis, code architecture, deep research
+allowed-tools: Read, Grep, Glob, Bash, Write, WebFetch, WebSearch, Agent, AskUserQuestion
 ---
 
-# /github-analyzer - GitHub源码分析器
+# /github-analyzer - GitHub Source Code Analyzer v2.0
 
-GitHub开源项目源码深度分析器。对项目进行多维度调研分析，包含架构理解、模块解析、设计模式识别、代码质量评估。
+Deep multi-dimension source code analysis for GitHub open-source projects. Generates structured reports with quality scorecards.
 
 ## Instructions
 
-### 分析模式
+### Analysis Modes
 
-**1. 深度调研模式 (Deep Research)**
-- 完整阅读代码，多维度理解
-- 至少3遍阅读：结构→逻辑→细节
-- 输出完整的多维度分析报告
-- 适用于：技术选型、架构学习、二次开发准备
+| Mode | When to Use | Depth | Output |
+|------|------------|-------|--------|
+| **deep-research** (default) | Tech selection, architecture learning, pre-fork | Full codebase, 3-pass read | Complete 8-section report + scorecard |
+| **quick-overview** | Initial screening, fast evaluation | README + entry points + key modules | Summary report (3 sections) |
+| **comparative** | Choosing between similar projects | Key dimensions side-by-side | Comparison matrix + recommendation |
 
-**2. 快速概览模式 (Quick Overview)**
-- 关键文件快速扫描
-- 重点关注README、入口文件、核心模块
-- 生成简要概要报告
-- 适用于：初步评估、快速了解、筛选项目
+### Workflow
 
-**3. 对比分析模式 (Comparative)**
-- 多个相似项目对比
-- 横向对比技术选型、架构设计、功能实现
-- 生成对比矩阵和推荐结论
+**Step 1: Setup**
 
-### 工作流程
+1. Confirm project URL and analysis mode (default: deep-research)
+2. Clone the project: `git clone --depth 1 <URL> /tmp/github-analyzer-<project-name>`
+3. If clone fails, fall back to WebFetch for README and key files via GitHub raw URLs
+4. Identify primary language and framework from file extensions and config files
 
-```
-Step 1: 需求确认
-→ 确认项目URL和分析模式
-→ 如需深度调研，确认关注维度
+**Step 2: Structure Scan**
 
-Step 2: 项目获取
-→ 克隆或浏览项目代码
-→ 识别项目语言和框架
+1. Run `find /tmp/github-analyzer-<name> -type f | head -200` to get file tree
+2. Read key config files in parallel: `package.json` / `go.mod` / `Cargo.toml` / `pyproject.toml` / `pom.xml` etc.
+3. Map directory structure -> identify layers (src, lib, cmd, internal, tests, docs, config)
+4. List all dependencies and their purposes
 
-Step 3: 结构分析
-→ 解析目录结构
-→ 识别技术栈和依赖
+**Step 3: Architecture Analysis** (deep-research only)
 
-Step 4: 架构分析
-→ 识别架构模式
-→ 分析分层设计
+1. Read entry point files (main.go, index.ts, app.py, etc.)
+2. Identify architecture pattern:
+   - **Layered**: clear separation of handlers/services/repositories
+   - **Microservices**: multiple service directories, inter-service communication
+   - **Event-driven**: message queues, event emitters, pub/sub patterns
+   - **Plugin**: plugin interface, registry, dynamic loading
+   - **Monolith**: single entry point, tightly coupled modules
+3. Trace the primary data flow from entry point through core logic to output
+4. Use Agent tool to analyze multiple core modules in parallel
 
-Step 5: 模块分析
-→ 深入核心模块
-→ 分析数据流和接口
+**Step 4: Module Deep-Dive** (deep-research only)
 
-Step 6: 模式识别
-→ 识别设计模式
-→ 评估应用质量
+For each core module (top 3-5 by importance):
+1. Read the module's main files
+2. Document: purpose, public API/interface, internal logic, dependencies
+3. Identify key algorithms or data structures
+4. Note cross-module coupling patterns
 
-Step 7: 质量评估
-→ 多维度评分
-→ 生成质量评估卡
+**Step 5: Design Pattern Recognition** (deep-research only)
 
-Step 8: 报告生成
-→ 汇总分析结果
-→ 提炼创新亮点和建议
+Scan for and document these patterns with file:line references:
 
-Step 9: 成果存储（可选）
-→ 存入调研成果库
-→ 更新索引
-```
+| Category | Patterns to Look For | How to Detect |
+|----------|---------------------|---------------|
+| Creational | Singleton, Factory, Builder | Grep for `getInstance`, `New*`, `Build()`, private constructors |
+| Structural | Adapter, Decorator, Facade | Grep for wrapper types, interface adapters, unified API surfaces |
+| Behavioral | Strategy, Observer, Command | Grep for interface-typed fields, event listeners, command registries |
+| Concurrency | Worker pool, Pipeline, Fan-out | Grep for `chan`, `goroutine`, `Promise.all`, thread pools |
 
-### 6维度分析框架
+**Step 6: Quality Scoring**
 
-1. **项目结构分析**
-   - 目录结构、模块划分
-   - 依赖关系、技术栈识别
+Score each dimension 1-10 using these rubrics:
 
-2. **架构设计分析**
-   - 整体架构模式识别（分层/微服务/事件驱动/插件等）
-   - 分层设计理解、核心组件交互
+| Dimension | 8-10 (Excellent) | 5-7 (Good) | 1-4 (Needs Work) |
+|-----------|-----------------|------------|------------------|
+| **Code Style** | Consistent formatting, linter config present, naming conventions followed | Mostly consistent, minor deviations | Inconsistent style, no linter, mixed conventions |
+| **Error Handling** | All external calls wrapped, custom error types, graceful degradation | Most errors handled, some bare panics/throws | Errors swallowed, no error types, crashes on edge cases |
+| **Test Coverage** | Test directory exists, unit + integration tests, CI config present | Some test files, basic unit tests | No tests or only trivial tests |
+| **Documentation** | README with examples, API docs, inline comments on complex logic | README exists, basic usage docs | No README or minimal single-line README |
+| **Security** | Input validation, no hardcoded secrets, dependency scanning | Basic validation, no obvious vulnerabilities | Hardcoded credentials, SQL injection risks, no input validation |
+| **Architecture** | Clear separation of concerns, dependency injection, extensible | Reasonable structure, some coupling | God objects, circular dependencies, spaghetti code |
 
-3. **模块深度解析**
-   - 核心模块功能
-   - 数据流分析、关键算法
+**How to verify scores**:
+- Code Style: check for `.eslintrc` / `.prettierrc` / `golangci-lint` config; sample 3 files for consistency
+- Error Handling: Grep for `catch`, `if err`, `try`, `rescue` patterns; check ratio of handled vs unhandled
+- Test Coverage: count test files vs source files; check for CI config (`.github/workflows/`, `Makefile` test target)
+- Documentation: check README length, presence of `/docs` directory, inline comment density
+- Security: Grep for hardcoded tokens/passwords, check for `.env.example`, look for input sanitization
+- Architecture: check import graph depth, look for circular imports, assess interface usage
 
-4. **设计模式识别**
-   - 创建型：单例、工厂、建造者
-   - 结构型：适配器、装饰器、外观
-   - 行为型：策略、观察者、命令
+**Step 7: Innovation & Highlights**
 
-5. **代码质量评估**
-   - 代码风格一致性
-   - 错误处理机制
-   - 测试覆盖情况
-   - 文档完整性
+1. Identify technical innovations or novel approaches
+2. Note reusable patterns worth learning from
+3. Assess the project's unique value proposition vs alternatives
 
-6. **创新点提炼**
-   - 技术亮点总结
-   - 可复用模式
-   - 学习借鉴价值
+**Step 8: Report Generation**
 
-### 代码质量评估卡模板
+Generate the full report (structure below). For deep-research mode, include all 8 sections. For quick-overview, include sections 1, 2, and 8 only.
 
-```
-┌────────────────────────────────────────────────┐
-│           代码质量评估卡                        │
-├────────────────────────────────────────────────┤
-│ 项目: [项目名称]                                │
-│ 评估日期: YYYY-MM-DD                           │
-├────────────────────────────────────────────────┤
-│ 维度              │ 分数  │ 评级  │ 备注       │
-├───────────────────┼───────┼───────┼────────────┤
-│ 代码风格          │ X.X   │ ★★★★☆ │ 描述       │
-│ 错误处理          │ X.X   │ ★★★★  │ 描述       │
-│ 测试覆盖          │ X.X   │ ★★★☆  │ 描述       │
-│ 文档完整性        │ X.X   │ ★★★★  │ 描述       │
-│ 安全性            │ X.X   │ ★★★★  │ 描述       │
-├───────────────────┼───────┼───────┼────────────┤
-│ 综合评分          │ X.X   │ ★★★★  │ 总评       │
-└────────────────────────────────────────────────┘
-```
+**Step 9: Save to Report Library (optional)**
 
-### 调研成果库（可选）
+If the user wants to save:
+1. Create directory: `~/research/github-analysis/` (or user-specified path)
+2. Save report as `<project-name>-analysis-<date>.md`
+3. This enables future reference when the user asks about previously analyzed projects
 
-分析报告可存入本地调研成果库，方便后续引用。默认建议路径：
+### Quality Scorecard Template
 
 ```
-~/research/github-analysis/
++--------------------------------------------------+
+|           Code Quality Scorecard                  |
++--------------------------------------------------+
+| Project: [name]           Date: YYYY-MM-DD        |
++--------------------------------------------------+
+| Dimension      | Score | Rating    | Evidence     |
++----------------+-------+-----------+--------------+
+| Code Style     | X.X   | ★★★★☆    | [specific]   |
+| Error Handling | X.X   | ★★★★     | [specific]   |
+| Test Coverage  | X.X   | ★★★☆     | [specific]   |
+| Documentation  | X.X   | ★★★★     | [specific]   |
+| Security       | X.X   | ★★★★     | [specific]   |
+| Architecture   | X.X   | ★★★★☆    | [specific]   |
++----------------+-------+-----------+--------------+
+| Overall        | X.X   | ★★★★     | [summary]    |
++--------------------------------------------------+
 ```
 
-> 你可以根据自己的项目结构自定义存储路径。
+**Rating scale**: 9-10 ★★★★★ | 7-8 ★★★★☆ | 5-6 ★★★☆☆ | 3-4 ★★☆☆☆ | 1-2 ★☆☆☆☆
 
-**引用机制**:
-当用户询问已调研项目时，优先引用调研成果库中的分析报告。
+**Evidence field**: Must cite specific files, patterns, or metrics. No vague assessments.
 
-### 输出报告结构
+### Report Structure
 
-```json
-{
-  "source_code_analysis_report": {
-    "version": "1.0",
-    "analysis_mode": "deep_research | quick_overview | comparative",
-    "01_项目概述": { ... },
-    "02_项目结构": { ... },
-    "03_架构设计": { ... },
-    "04_模块分析": [ ... ],
-    "05_设计模式": [ ... ],
-    "06_代码质量": { ... },
-    "07_创新与亮点": { ... },
-    "08_总结建议": { ... }
-  }
-}
+```markdown
+## Source Code Analysis Report
+
+### 1. Project Overview
+- Name, URL, primary language, framework
+- Purpose and target audience
+- Stars, forks, contributors, last commit date
+
+### 2. Project Structure
+- Directory tree (key directories only)
+- Tech stack and dependencies
+- Build system and toolchain
+
+### 3. Architecture Design (deep-research)
+- Architecture pattern identified
+- Layer diagram (ASCII)
+- Component interaction flow
+- Key architectural decisions and trade-offs
+
+### 4. Module Analysis (deep-research)
+For each core module:
+- Purpose and responsibility
+- Public API surface
+- Internal implementation highlights
+- Dependencies and coupling
+
+### 5. Design Patterns (deep-research)
+- Patterns identified with file:line references
+- Quality of pattern implementation
+- Patterns that could improve the codebase
+
+### 6. Code Quality (deep-research)
+- Quality Scorecard (see template above)
+- Per-dimension evidence and analysis
+
+### 7. Innovation & Highlights (deep-research)
+- Technical innovations
+- Reusable patterns
+- Learning value
+
+### 8. Summary & Recommendations
+- Overall assessment
+- Strengths (top 3)
+- Weaknesses (top 3)
+- Recommendations for users/contributors
+```
+
+### Comparative Mode
+
+When comparing projects (e.g., "compare A vs B"):
+
+1. Run quick-overview on each project (in parallel using Agent tool)
+2. Build comparison matrix:
+
+```markdown
+| Dimension | Project A | Project B |
+|-----------|----------|----------|
+| Language  | Go       | Rust     |
+| Stars     | 5.2k     | 3.8k    |
+| Architecture | Layered | Plugin |
+| Test Coverage | 8/10 | 6/10  |
+| Documentation | 7/10 | 9/10  |
+| Last Updated | 2026-03 | 2026-03 |
+| Unique Strength | Performance | Extensibility |
+```
+
+3. Provide clear recommendation with reasoning
+
+### Error Handling
+
+- **Clone fails**: Fall back to WebFetch for README + key files via `raw.githubusercontent.com`
+- **Large repo (>10k files)**: Focus on `src/` or `lib/` directories only, skip vendor/node_modules
+- **Binary/compiled project**: Focus on build config, README, and any source directories
+- **Private repo**: Inform user that analysis requires public access or local clone
+
+### Cleanup
+
+After analysis is complete, remove the cloned directory:
+```bash
+rm -rf /tmp/github-analyzer-<project-name>
 ```
 
 ## Examples
 
-### 深度调研
-```
-用户: run /github-analyzer https://github.com/opencode-ai/opencode 深度调研
-输出: 完整的多维度分析报告（可选存入调研成果库）
-```
+**Deep research**: `/github-analyzer https://github.com/user/repo deep-research`
+-> Clone -> 3-pass analysis -> full 8-section report + scorecard -> optional save
 
-### 快速概览
-```
-用户: run /github-analyzer https://github.com/xxx/xxx 快速概览
-输出: 简要概要报告（项目定位、技术栈、核心价值）
-```
+**Quick overview**: `/github-analyzer https://github.com/user/repo quick-overview`
+-> Clone -> structure scan + README -> sections 1, 2, 8 only -> fast summary
 
-### 对比分析
-```
-用户: run /github-analyzer 对比 projectA vs projectB
-输出: 对比矩阵和推荐结论
-```
+**Comparative**: `/github-analyzer compare projectA vs projectB`
+-> Parallel quick-overview on both -> comparison matrix -> recommendation
 
-### 查询已有成果
-```
-用户: OpenCode项目怎么样？
-输出: 引用调研成果库中的分析报告
-```
-
-### 指定关注维度
-```
-用户: run /github-analyzer https://github.com/xxx/xxx 深度调研 关注架构设计和设计模式
-输出: 侧重架构设计和设计模式的深度分析
-```
-
-### 完整输入输出示例
-```
-用户: /github-analyzer https://github.com/anthropics/claude-code 深度调研
-
-输出:
-┌────────────────────────────────────────────────┐
-│           代码质量评估卡                        │
-├────────────────────────────────────────────────┤
-│ 项目: claude-code                              │
-│ 评估日期: 2026-03-08                           │
-├────────────────────────────────────────────────┤
-│ 维度              │ 分数  │ 评级  │ 备注       │
-├───────────────────┼───────┼───────┼────────────┤
-│ 代码风格          │ 9.0   │ ★★★★★ │ TypeScript │
-│ 错误处理          │ 8.5   │ ★★★★☆ │ 完善       │
-│ 测试覆盖          │ 8.0   │ ★★★★  │ 单元+集成  │
-│ 文档完整性        │ 9.0   │ ★★★★★ │ 详尽       │
-│ 安全性            │ 8.5   │ ★★★★☆ │ 沙箱隔离   │
-├───────────────────┼───────┼───────┼────────────┤
-│ 综合评分          │ 8.6   │ ★★★★☆ │ 优秀       │
-└────────────────────────────────────────────────┘
-
-+ 完整 8 章节分析报告（项目概述→总结建议）
-+ 可选存入调研成果库
-```
+**Focused dimensions**: `/github-analyzer https://github.com/user/repo deep-research focus on architecture and design patterns`
+-> Full clone but emphasize sections 3 and 5 with extra depth
 
 ## Quick Reference
 
-| 参数 | 说明 |
-|------|------|
-| 分析模式 | 深度调研 (默认) / 快速概览 / 对比分析 |
-| 6 维度 | 项目结构、架构设计、模块解析、设计模式、代码质量、创新点 |
-| 输出格式 | JSON 报告 + 质量评估卡 |
-| 成果库 | 可自定义，默认建议 `~/research/github-analysis/` |
-| 默认行为 | 未指定模式时默认"深度调研"，未指定维度时使用全部 6 维度 |
+| Parameter | Value |
+|-----------|-------|
+| Modes | deep-research (default) / quick-overview / comparative |
+| Dimensions | Structure, Architecture, Modules, Patterns, Quality, Innovation |
+| Scoring | 1-10 per dimension with evidence-based rubrics |
+| Output | Markdown report + quality scorecard |
+| Storage | Optional, default `~/research/github-analysis/` |
+| Cleanup | Auto-remove cloned repos from /tmp after analysis |
 
 ## Related Skills
 
-- **github-finder**: 项目发现器，本 SKILL 的上游。finder 搜索项目后可链式调用本 SKILL 进行深度分析
-- **smart-router** (可选): 如已安装，可通过路由器自动触发本 SKILL
+- **github-finder**: Project discovery (upstream). Finder discovers projects, then chain-calls this skill for deep analysis.

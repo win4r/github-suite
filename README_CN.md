@@ -3,16 +3,16 @@
 
 # github-suite
 
-> GitHub 项目发现与源码深度分析工具套件，适用于 Claude Code SKILL 框架。
+> GitHub 项目发现与源码深度分析工具套件，适用于 Claude Code Skill 框架。
 
 [English](README.md)
 
 ## 概览
 
-| SKILL | 版本 | 说明 |
+| Skill | 版本 | 说明 |
 |-------|------|------|
-| `github-finder` | v2.0 | 多源多角度搜索，自适应评估，双语支持 |
-| `github-analyzer` | v1.0 | 6 维度源码深度分析，质量评估卡 |
+| `github-finder` | v2.1 | 多源多角度搜索，自适应评估，双语支持，搜索扩展 |
+| `github-analyzer` | v2.0 | 6 维度源码深度分析，证据驱动评分，质量评估卡 |
 
 ## 工作流
 
@@ -33,26 +33,34 @@
 
 ## 核心能力
 
-### github-finder v2.0
+### github-finder v2.1
 
 | 能力 | 说明 |
 |------|------|
 | 术语预研 | 搜索前识别产品名、代号、缩写 |
 | 双语搜索 | 中文输入按 50/50 中英比例，英文输入按 30/70 比例并行查询 |
-| 多角度查询 | ≥3 个搜索角度：直接工具、生态插件、基础设施、社区、替代方案 |
+| 多角度查询 | >=3 个搜索角度：直接工具、生态插件、基础设施、社区、替代方案 |
 | 自适应星级 | 按生态年龄动态调整阈值（成熟 >1000、成长 >200、新兴 >50） |
 | 搜索扩展 | README 引用、GitHub Topics、竞品对比、引用图谱 |
 | 社区源 | Hacker News、Reddit、V2EX、知乎 |
-| 时间感知 | 查询附加年份，🆕 标注新项目，⚠️ 标注停滞项目 |
+| 时间感知 | 查询附加年份，标注新项目和停滞项目 |
+| 分类法先行 | 模糊需求自动拆解为可搜索子分类 |
+| 错误恢复 | 搜索或抓取失败时的降级策略 |
+| 并行搜索 | 使用 Agent 工具并行执行独立搜索 |
 
-### github-analyzer v1.0
+### github-analyzer v2.0
 
 | 能力 | 说明 |
 |------|------|
 | 3 种分析模式 | 深度调研、快速概览、对比分析 |
-| 6 维度框架 | 结构、架构、模块、模式、质量、创新 |
-| 质量评估卡 | 多维度评分可视化 |
-| 成果库 | 调研报告存储与引用 |
+| 6 章节报告 | 结构、架构、模块、模式、质量、创新 |
+| 证据驱动评分 | 6 维评分卡（风格、错误处理、测试、文档、安全、架构），三级标准，引用具体文件和行号 |
+| 模式检测 | 基于 Grep 的创建型、结构型、行为型模式检测 |
+| 质量评估卡 | 多维度评分，强制提供证据 |
+| 并行分析 | 使用 Agent 工具并发分析多个模块 |
+| 对比矩阵 | 并排比较，给出明确推荐 |
+| 报告库 | 分析报告本地存储与引用 |
+| 自动清理 | 分析完成后自动删除 /tmp 中的克隆仓库 |
 
 ## 使用方法
 
@@ -75,17 +83,17 @@
 ### 源码分析
 
 ```bash
-# 深度调研
-/github-analyzer https://github.com/user/repo 深度调研
+# 深度调研（默认模式）
+/github-analyzer https://github.com/user/repo deep-research
 
 # 快速概览
-/github-analyzer https://github.com/user/repo 快速概览
+/github-analyzer https://github.com/user/repo quick-overview
 
 # 对比分析
-/github-analyzer 对比 projectA vs projectB
+/github-analyzer compare projectA vs projectB
 
 # 指定关注维度
-/github-analyzer https://github.com/user/repo 深度调研 关注架构设计和设计模式
+/github-analyzer https://github.com/user/repo deep-research focus on architecture and design patterns
 ```
 
 ### 链式调用
@@ -97,31 +105,36 @@
 
 ## 环境要求
 
-- [Claude Code](https://claude.ai/code)，需支持 SKILL 框架
+- [Claude Code](https://claude.ai/code)（CLI、桌面版或网页版）
 - 可访问互联网（用于 GitHub 搜索和网页抓取）
 
 ## 安装
 
 ```bash
-# 克隆到 SKILL 仓库目录
-git clone https://github.com/HeroAshacker/github-suite.git \
-  ~/.claude/skill-repository/github-suite
+# 方式 1: 用户级安装（所有项目可用，推荐）
+git clone https://github.com/win4r/github-suite.git /tmp/github-suite
+cp -r /tmp/github-suite/github-finder ~/.claude/commands/github-finder
+cp -r /tmp/github-suite/github-analyzer ~/.claude/commands/github-analyzer
+rm -rf /tmp/github-suite
 
-# 激活 SKILL（创建符号链接）
-ln -s ~/.claude/skill-repository/github-suite/github-finder \
-  ~/.claude/skills/github-finder
-ln -s ~/.claude/skill-repository/github-suite/github-analyzer \
-  ~/.claude/skills/github-analyzer
+# 方式 2: 项目级安装（仅在该项目中可用）
+mkdir -p .claude/commands
+git clone https://github.com/win4r/github-suite.git /tmp/github-suite
+cp -r /tmp/github-suite/github-finder .claude/commands/github-finder
+cp -r /tmp/github-suite/github-analyzer .claude/commands/github-analyzer
+rm -rf /tmp/github-suite
 
-# 重启 Claude Code 会话以加载新 SKILL
+# 重启 Claude Code 会话以加载新 Skill
 ```
+
+> **注意**: 每个 Skill 是包含 `SKILL.md` 文件的目录。放在 `~/.claude/commands/` (用户级) 或 `.claude/commands/` (项目级) 下。
 
 ## 版本
 
-| SKILL | 版本 | 状态 |
+| Skill | 版本 | 状态 |
 |-------|------|------|
-| github-finder | v2.0 | 稳定 |
-| github-analyzer | v1.0 | 稳定 |
+| github-finder | v2.1 | 稳定 |
+| github-analyzer | v2.0 | 稳定 |
 
 ## 许可证
 
