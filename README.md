@@ -3,7 +3,7 @@
 
 # github-suite
 
-> Claude Code skill suite for GitHub project discovery & source code analysis.
+> Claude Code skill suite for GitHub project discovery, source code analysis, and multi-round project optimization.
 
 [中文文档](README_CN.md)
 
@@ -13,6 +13,7 @@
 |-------|---------|-------------|
 | `github-finder` | v2.1 | Multi-source bilingual search with adaptive thresholds and search expansion |
 | `github-analyzer` | v2.0 | 6-dimension deep source code analysis with evidence-based scoring |
+| `github-optimizer` | v1.0 | Multi-round iterative project optimization with severity-driven prioritization |
 
 ## Workflow
 
@@ -29,6 +30,14 @@
         ▲                                         │
         │            User Request                  │
         └──────────────────────────────────────────┘
+
+┌──────────────────────────────────────────────────┐
+│  github-optimizer (Standalone or Post-Analysis)   │
+│                                                   │
+│  • Deep reconnaissance   • Severity classification│
+│  • Multi-round iteration • Quality gates          │
+│  • Code review           • Before/After metrics   │
+└──────────────────────────────────────────────────┘
 ```
 
 ## Features
@@ -61,6 +70,19 @@
 | Comparative Matrix | Side-by-side comparison with clear recommendation |
 | Report Library | Save analysis reports locally for future reference and retrieval |
 | Auto-Cleanup | Removes cloned repos from /tmp after analysis |
+
+### github-optimizer v1.0
+
+| Feature | Description |
+|---------|-------------|
+| 5-Phase Workflow | Recon -> Plan -> Execute -> Review -> Ship |
+| Severity-Driven Rounds | Critical -> High -> Medium -> Low, never mix tiers |
+| Deep Reconnaissance | Full file inventory, structural understanding, systematic issue scanning |
+| 8-Category Issue Scan | Correctness, Completeness, Consistency, Performance, Security, Usability, Architecture, Maintainability |
+| Quality Gates | Self-check and regression check after each round |
+| Optimization Patterns | Built-in heuristics for common anti-patterns (bloat, stale refs, vague instructions) |
+| Before/After Metrics | Quantitative and qualitative comparison of improvements |
+| Parallel Execution | Uses Agent tool for independent fixes within the same round |
 
 ## Usage
 
@@ -96,6 +118,19 @@
 /github-analyzer https://github.com/user/repo deep-research focus on architecture and design patterns
 ```
 
+### Project Optimization
+
+```bash
+# Optimize a remote project
+/github-optimizer https://github.com/user/repo
+
+# Optimize current local project
+/github-optimizer .
+
+# Optimize a specific local path
+/github-optimizer /path/to/project
+```
+
 ### Chained Workflow
 
 ```bash
@@ -115,6 +150,7 @@
 git clone https://github.com/win4r/github-suite.git /tmp/github-suite
 cp -r /tmp/github-suite/github-finder ~/.claude/commands/github-finder
 cp -r /tmp/github-suite/github-analyzer ~/.claude/commands/github-analyzer
+cp -r /tmp/github-suite/github-optimizer ~/.claude/commands/github-optimizer
 rm -rf /tmp/github-suite
 
 # Option 2: Project-level (only available in that project)
@@ -122,6 +158,7 @@ mkdir -p .claude/commands
 git clone https://github.com/win4r/github-suite.git /tmp/github-suite
 cp -r /tmp/github-suite/github-finder .claude/commands/github-finder
 cp -r /tmp/github-suite/github-analyzer .claude/commands/github-analyzer
+cp -r /tmp/github-suite/github-optimizer .claude/commands/github-optimizer
 rm -rf /tmp/github-suite
 
 # Restart Claude Code session to load new skills
@@ -135,6 +172,7 @@ rm -rf /tmp/github-suite
 |-------|---------|--------|
 | github-finder | v2.1 | Stable |
 | github-analyzer | v2.0 | Stable |
+| github-optimizer | v1.0 | Stable |
 
 ## License
 

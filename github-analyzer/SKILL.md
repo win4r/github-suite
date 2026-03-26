@@ -246,3 +246,4 @@ rm -rf /tmp/github-analyzer-<project-name>
 ## Related Skills
 
 - **github-finder**: Project discovery (upstream). Finder discovers projects, then chain-calls this skill for deep analysis.
+- **github-optimizer**: Multi-round project optimization. Use analysis results as input to drive iterative improvement.

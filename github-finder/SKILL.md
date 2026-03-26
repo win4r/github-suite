@@ -190,3 +190,4 @@ Based on analysis, recommend **[project]** because: ...
 ## Related Skills
 
 - **github-analyzer**: Deep source code analysis (downstream). Chain-call after discovery for 6-dimension analysis.
+- **github-optimizer**: Multi-round project optimization. Use after discovery to iteratively improve a project to production quality.

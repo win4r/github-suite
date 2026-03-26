@@ -3,7 +3,7 @@
 
 # github-suite
 
-> GitHub 项目发现与源码深度分析工具套件，适用于 Claude Code Skill 框架。
+> GitHub 项目发现、源码深度分析与多轮迭代优化工具套件，适用于 Claude Code Skill 框架。
 
 [English](README.md)
 
@@ -13,6 +13,7 @@
 |-------|------|------|
 | `github-finder` | v2.1 | 多源多角度搜索，自适应评估，双语支持，搜索扩展 |
 | `github-analyzer` | v2.0 | 6 维度源码深度分析，证据驱动评分，质量评估卡 |
+| `github-optimizer` | v1.0 | 多轮迭代项目优化，严重等级驱动，质量关卡 |
 
 ## 工作流
 
@@ -24,11 +25,19 @@
 │  • 术语预研      │                     │  • 3 种模式       │
 │  • 双语搜索      │                     │  • 6 维度分析     │
 │  • 多角度查询    │                     │  • 质量评估卡     │
-│  • 自适应星级 ★  │                     │  • 成果报告库     │
+│  • 自适应星级 ★  │                     │  • 报告库         │
 └─────────────────┘                      └──────────────────┘
         ▲                                         │
         │              用户请求                     │
         └──────────────────────────────────────────┘
+
+┌──────────────────────────────────────────────────┐
+│  github-optimizer（独立使用 或 分析后优化）         │
+│                                                   │
+│  • 深度侦察         • 严重等级分类                 │
+│  • 多轮迭代修复     • 质量关卡                     │
+│  • 代码审查         • 前后对比指标                 │
+└──────────────────────────────────────────────────┘
 ```
 
 ## 核心能力
@@ -61,6 +70,19 @@
 | 对比矩阵 | 并排比较，给出明确推荐 |
 | 报告库 | 分析报告本地存储与引用 |
 | 自动清理 | 分析完成后自动删除 /tmp 中的克隆仓库 |
+
+### github-optimizer v1.0
+
+| 能力 | 说明 |
+|------|------|
+| 5 阶段工作流 | 侦察 -> 规划 -> 执行 -> 审查 -> 交付 |
+| 严重等级驱动 | Critical -> High -> Medium -> Low，不混合等级 |
+| 深度侦察 | 完整文件清单，结构理解，系统化问题扫描 |
+| 8 类问题扫描 | 正确性、完整性、一致性、性能、安全、可用性、架构、可维护性 |
+| 质量关卡 | 每轮完成后自检和回归检查 |
+| 优化模式库 | 内置常见反模式识别（膨胀、过时引用、模糊指令等） |
+| 前后对比指标 | 量化和定性改进对比 |
+| 并行执行 | 使用 Agent 工具并行处理同一轮内的独立修复 |
 
 ## 使用方法
 
@@ -96,6 +118,19 @@
 /github-analyzer https://github.com/user/repo deep-research focus on architecture and design patterns
 ```
 
+### 项目优化
+
+```bash
+# 优化远程项目
+/github-optimizer https://github.com/user/repo
+
+# 优化当前本地项目
+/github-optimizer .
+
+# 优化指定本地路径
+/github-optimizer /path/to/project
+```
+
 ### 链式调用
 
 ```bash
@@ -115,6 +150,7 @@
 git clone https://github.com/win4r/github-suite.git /tmp/github-suite
 cp -r /tmp/github-suite/github-finder ~/.claude/commands/github-finder
 cp -r /tmp/github-suite/github-analyzer ~/.claude/commands/github-analyzer
+cp -r /tmp/github-suite/github-optimizer ~/.claude/commands/github-optimizer
 rm -rf /tmp/github-suite
 
 # 方式 2: 项目级安装（仅在该项目中可用）
@@ -122,6 +158,7 @@ mkdir -p .claude/commands
 git clone https://github.com/win4r/github-suite.git /tmp/github-suite
 cp -r /tmp/github-suite/github-finder .claude/commands/github-finder
 cp -r /tmp/github-suite/github-analyzer .claude/commands/github-analyzer
+cp -r /tmp/github-suite/github-optimizer .claude/commands/github-optimizer
 rm -rf /tmp/github-suite
 
 # 重启 Claude Code 会话以加载新 Skill
@@ -135,6 +172,7 @@ rm -rf /tmp/github-suite
 |-------|------|------|
 | github-finder | v2.1 | 稳定 |
 | github-analyzer | v2.0 | 稳定 |
+| github-optimizer | v1.0 | 稳定 |
 
 ## 许可证
 

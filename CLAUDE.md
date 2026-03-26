@@ -6,6 +6,7 @@
 github-suite/
 ├── github-finder/SKILL.md    # Project discovery skill (v2.1)
 ├── github-analyzer/SKILL.md  # Source code analysis skill (v2.0)
+├── github-optimizer/SKILL.md # Multi-round project optimizer (v1.0)
 ├── README.md                 # English documentation
 ├── README_CN.md              # Chinese documentation
 ├── CLAUDE.md                 # This file
@@ -25,4 +26,4 @@ github-suite/
 
 ## Testing a Skill
 
-To test locally: copy the skill directory to `~/.claude/commands/` and restart Claude Code. Then invoke with `/github-finder <query>` or `/github-analyzer <url>`.
+To test locally: copy the skill directory to `~/.claude/commands/` and restart Claude Code. Then invoke with `/github-finder <query>`, `/github-analyzer <url>`, or `/github-optimizer <url-or-path>`.
